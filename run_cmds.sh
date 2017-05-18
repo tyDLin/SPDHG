@@ -1,0 +1,1 @@
+nohup matlab -nodisplay -nosplash -nodesktop -r "all_run;exit;" &
