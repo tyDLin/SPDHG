@@ -4,11 +4,10 @@ These codes provide implementations of solvers for large-scale compositely regul
 
 # About
 
-We consider a wide spectrum of regularized stochastic minimization problems, where the regularization term is composite
-with a linear function. Examples of this formulation include graphguided regularized minimization, generalized Lasso and a class of l1-regularized problems. The computational challenge is that the closed-form solution of the proximal mapping associated with the regularization term is not available due to the imposed linear composition. Fortunately, the structure of the regularization term allows us to reformulate it as a new convex-concave saddle point problem which can be solved using the Primal-Dual Hybrid Gradient (PDHG) approach. However, this approach may be inefficient in realistic applications
-as computing the full gradient of the expected objective function could be very expensive when the number of input data
-samples is considerably large. To address this issue, we propose a Stochastic PDHG (SPDHG) algorithm with either uniformly or nonuniformly averaged iterates. Numerical experiments on different genres of datasets demonstrate that our proposed algorithm
-outperforms other competing algorithms.
+In this paper, we propose a stochastic Primal-Dual Hybrid Gradient (PDHG) approach for solving a wide spectrum of regularized stochastic minimization problems, where the regularization term is composite with a linear function. It has been recognized that solving this kind of problem is challenging since the closed-form solution of the proximal mapping associated with the regularization term is not available due to the imposed linear composition, and the per-iteration cost of computing the full gradient of the expected objective function is extremely high when the number of input data samples is considerably large. 
+
+Our new approach overcomes these issues by exploring the special structure of the regularization term and sampling a few data points at each iteration. Rather than analyzing the convergence in expectation, we provide the detailed iteration complexity analysis for the cases of both uniformly and non-uniformly averaged iterates with high probability. This strongly supports the
+good practical performance of the proposed approach. Numerical experiments demonstrate that the efficiency of stochastic PDHG, which outperforms other competing algorithms, as expected by the high-probability convergence analysis.
 
 # Codes
 
@@ -17,3 +16,5 @@ Implementations in MATLAB are provided, including graph-guided logistic regressi
 # References
 
 L. Qiao, T. Lin, Y-G. Jiang, F. Yang, W. Liu, X. Lu. On Stochastic Primal-Dual Hybrid Gradient Approach for Compositely Regularized Minimization. Proc. of the 22th ECAI Conference (2016). 
+
+L. Qiao, T. Lin, Q. Qin and X. Lu. On the Iteration Complexity Analysis of Stochastic Primal-Dual Hybrid Gradient Approach with High Probability. https://arxiv.org/abs/1801.06934. 
