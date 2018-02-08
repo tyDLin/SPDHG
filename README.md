@@ -17,4 +17,4 @@ Implementations in MATLAB are provided, including graph-guided logistic regressi
 
 L. Qiao, T. Lin, Y-G. Jiang, F. Yang, W. Liu, X. Lu. On Stochastic Primal-Dual Hybrid Gradient Approach for Compositely Regularized Minimization. Proc. of the 22th ECAI Conference (2016). 
 
-L. Qiao, T. Lin, Q. Qin and X. Lu. On the Iteration Complexity Analysis of Stochastic Primal-Dual Hybrid Gradient Approach with High Probability. https://arxiv.org/abs/1801.06934. 
+L. Qiao, T. Lin, Q. Qin and X. Lu. On the Iteration Complexity Analysis of Stochastic Primal-Dual Hybrid Gradient Approach with High Probability. Arxiv Priprint. https://arxiv.org/abs/1801.06934. 
