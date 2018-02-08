@@ -2,8 +2,7 @@
 % Algorithm: Stochastic Ada_SADMM_diag
 function outputs = Ada_SADMMdiag(samples, labels, opts)
 F = opts.F; mu = opts.mu; beta = opts.beta;
-max_it = opts.max_it; checki = opts.checki;
-a = opts.a;
+max_it = opts.max_it; checki = opts.checki; a = opts.a;
 
 % initialization
 t = cputime; time_solving = 0;

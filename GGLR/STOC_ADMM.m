@@ -14,7 +14,7 @@ eta = eta*scaling;
 t = cputime; time_solving = 0; xs = []; times = []; iters = []; Num_i  = 0;
 [d,N] = size(samples); rnd_pm = randperm(N);
 x = zeros(d,1); y = zeros(d,1); zeta = zeros(d,1); xbar = zeros(d,1);
-% code opt
+
 eta_inv = 1/eta; betaFT = beta*F';
 if d < 5000
     InvFFT = inv(eta_inv*eye(d) + beta*(F'*F));

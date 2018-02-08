@@ -4,14 +4,12 @@ colors  = {'y','b','g','m','c','c','r','k','k'};
 markers = {'+','o','+','o','>','<','h','v','v','p','h'};
 LStyles = {'-','-','-','-','-','-','-','-',':'};
 funfcn_batch = {@LPDHG};
-funfcn_stoc  = {@STOC_ADMM,@RDA_ADMM,@OPG_ADMM,@Fast_SADMM,@SPDHG_GC};
-%{@STOC_ADMM,@RDA_ADMM,@OPG_ADMM,@Fast_SADMM,@Ada_SADMMdiag,@Ada_SADMMfull,@SPDHG_GC};
-datasets     = {'cifar-10-bin','cifar-100-bin'};
-%{'classic', 'hitech', 'k1b', 'la12', 'la1', 'la2', 'ng3sim', 'ohscal', 'reviews', 'sports'};%;{'covtype.libsvm.binary','gisette_scale','rcv1_train.binary','SUSY','splice','svmguide3','a9a','20news_100word','mushrooms','w8a'};
+funfcn_stoc  = {@STOC_ADMM,@RDA_ADMM,@OPG_ADMM,@Fast_SADMM,@Ada_SADMMdiag,@Ada_SADMMfull,@SPDHG_GC};
+datasets     = {'classic', 'hitech', 'k1b', 'la12', 'la1', 'la2', 'ng3sim', 'ohscal', 'reviews', 'sports'};%;{'covtype.libsvm.binary','gisette_scale','rcv1_train.binary','SUSY','splice','svmguide3','a9a','20news_100word','mushrooms','w8a'};
 
-opts.epochs  = 10;
+opts.epochs  = 5;
 opts.min_time= 10;
-en_subplot   = 1;
+en_subplot   = 0;
 
 nruns_batch  = 1;
 showp = 0.1;
@@ -45,7 +43,7 @@ for idx_dataset = 1:length(datasets)
     trace_time       =[];    trace_passes     =[];
     trace_obj_val    =[];    trace_test_loss  =[];
     for idx_method = 1:length(funfcn_stoc)
-        stoc_data = load(['results_GGLR_' func2str(funfcn_stoc{idx_method}) '_' dataset_name '.mat'],'stat_data','trace_passes','trace_time','trace_accuracy','trace_obj_val','trace_test_loss');
+        stoc_data = load(['results_GGLR_' func2str(funfcn_stoc{idx_method}) '_' dataset_name '.mat'],'trace_passes','trace_time','trace_accuracy','trace_obj_val','trace_test_loss');
         num_runs = size(stoc_data.trace_time,2);
         for idx_runs = 1:num_runs
             for idx_trace = 1:length(stoc_data.trace_time(:,idx_runs))
@@ -58,7 +56,7 @@ for idx_dataset = 1:length(datasets)
         end
     end
     for idx_method = 1:length(funfcn_batch)
-        batch_data = load(['results_GGLR_' func2str(funfcn_batch{1}) '_' dataset_name '.mat'],'stat_data','trace_passes','trace_time','trace_accuracy','trace_obj_val','trace_test_loss');
+        batch_data = load(['results_GGLR_' func2str(funfcn_batch{1}) '_' dataset_name '.mat'],'trace_passes','trace_time','trace_accuracy','trace_obj_val','trace_test_loss');
     end
     
     %stochasitc methods
@@ -102,12 +100,7 @@ for idx_dataset = 1:length(datasets)
     batch_data.trace_test_loss_avg  =[];
     batch_data.trace_test_loss_std  =[];
     for idx_method = 1:length(funfcn_batch)
-        num_traces = length(batch_data.stat_data(idx_method,1).trace.times);
-        for idx_runs = 1:num_runs
-            if num_traces > length(batch_data.stat_data(idx_method,idx_runs).trace.times);
-                num_traces = length(batch_data.stat_data(idx_method,idx_runs).trace.times);
-            end
-        end
+        num_traces = length(batch_data.trace_passes(:,idx_method,1));
         for idx_trace = 1:num_traces
             batch_data.trace_accuracy_avg(idx_trace,idx_method) = mean(batch_data.trace_accuracy(idx_trace,idx_method,:));
             batch_data.trace_accuracy_std(idx_trace,idx_method) = std(batch_data.trace_accuracy(idx_trace,idx_method,:));
@@ -194,11 +187,10 @@ for idx_dataset = 1:length(datasets)
         end
         if temp_max_y > max_y
             max_y = temp_max_y;
-        end
-        
+        end        
     end
     hold off;  xlim([0 opts.epochs]);
-    ylim([0.6*min_y max_y+5*(max_y-min_y)]);
+    %ylim([0.6*min_y max_y+5*(max_y-min_y)]);
     %grid on;
     set(gca,'Yscale','log');%set(gca,'Xscale','log'); 
     set(gca,'fontsize',size_axis);
@@ -208,7 +200,7 @@ for idx_dataset = 1:length(datasets)
     end
     %title(sprintf('eta_1=%g',eta));
     if ~en_subplot
-        saveas(gca, [dataset_name '_time_vs_epochs.eps'],'psc2');
+        saveas(gca, [dataset_name '_time_vs_epochs.eps'],'epsc');
     end
     
     
@@ -235,8 +227,7 @@ for idx_dataset = 1:length(datasets)
         end
         if temp_max_y > max_y
             max_y = temp_max_y;
-        end
-        
+        end        
     end
     for idx_method = 1:length(funfcn_batch)
         idx_max = find(opts.epochs < batch_data.trace_passes_avg(:,idx_method),1);
@@ -251,8 +242,7 @@ for idx_dataset = 1:length(datasets)
         end
         if temp_max_y > max_y
             max_y = temp_max_y;
-        end
-        
+        end        
     end
     hold off; %grid on;
     xlim([0 opts.epochs]);
@@ -277,7 +267,7 @@ for idx_dataset = 1:length(datasets)
     end
     %         %title(sprintf('eta_1=%g',eta));
     if ~en_subplot
-        saveas(gca, [dataset_name '_loss_vs_epochs.eps'],'psc2');
+        saveas(gca, [dataset_name '_loss_vs_epochs.eps'],'epsc');
     end
     
     
@@ -304,8 +294,7 @@ for idx_dataset = 1:length(datasets)
         end
         if temp_max_y > max_y
             max_y = temp_max_y;
-        end
-        
+        end        
     end
     for idx_method = 1:length(funfcn_batch)
         idx_max = find(opts.epochs < batch_data.trace_passes_avg(:,idx_method),1); idx_start = 1;
@@ -326,8 +315,7 @@ for idx_dataset = 1:length(datasets)
         end
         if temp_max_y > max_y
             max_y = temp_max_y;
-        end
-        
+        end        
     end
     hold off;
     %grid on;
@@ -353,17 +341,15 @@ for idx_dataset = 1:length(datasets)
      end
     %         %title(sprintf('eta_1=%g',eta));
     if ~en_subplot
-        saveas(gca, [dataset_name '_obj_vs_epochs.eps'],'psc2');        
+        saveas(gca, [dataset_name '_obj_vs_epochs.eps'],'epsc');        
     end
 end
-
 
 if en_subplot
     figure(1);
     x= [0.09,0.93]; y= [0.90,0.90];       annotation(gcf,'arrow',x,y);
     x= [0.104,0.104]; y= [0.95,0.06];          annotation(gcf,'arrow',x,y);
-    suptitle('The Comparsion of All Methods on Graph-Guided Logistic Regression');
-    
+    suptitle('The Comparsion of All Methods on Graph-Guided Logistic Regression');    
     
     figure(1)
     legends = [];
@@ -400,7 +386,3 @@ if en_subplot
         'HeadStyle','none',...
         'LineStyle','none');
 end
-
-
-
-

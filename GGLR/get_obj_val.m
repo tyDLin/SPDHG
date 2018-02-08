@@ -9,5 +9,4 @@ obj_val = (sum(log(logist(~posind))) + sum(Zx(posind) + log(logist(posind))))/N;
 %obj_val = sum(log(1+exp(-l_train.*(s_train'*x))))/length(l_train);
 
 obj_val = obj_val + mu*sum(sum(abs(F*x)));
-
 end

@@ -1,4 +1,4 @@
-%Algorithm: SPDHG_GGLR
+% uniformly general convex SPDHG
 function outputs  = SPDHG_GC(samples, labels, opts)
 mu = opts.mu; L = opts.L; s  = opts.s; F = opts.F; 
 max_it = opts.max_it; checki = opts.checki; eta = 1;
@@ -20,8 +20,7 @@ nuFT = mu*F'; snuF = s*mu*F;
 
 done = false; k = 0;
 while ~done
-    r  = eta/(sqrt(k+1) + L);
-    
+    r  = eta/(sqrt(k+1) + L);    
     % Stochastic PDHG
     y = min(1, max(-1,snuF*x+y));
     
@@ -37,7 +36,7 @@ while ~done
     end
     x      = x - r*(g + nuFT*y);
     
-    % uniformly averaging
+    % uniformly averaged
     xbar   = (k*xbar + x)/(k+1);
     
     % log

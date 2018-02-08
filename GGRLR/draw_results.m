@@ -6,13 +6,11 @@ LStyles = {'-','-','-','-','-','-','-','-',':'};
 
 funfcn_batch = {@LPDHG};
 funfcn_stoc  = {@STOC_ADMM,@Fast_SADMM,@RDA_ADMM,@OPG_ADMM,@SPDHG_SC1,@SPDHG_SC2};
-datasets     = {'cifar-100-bin'}; %,'cifar-100-bin'
-%{'classic', 'hitech', 'k1b', 'la12', 'la1', 'la2', 'ng3sim', 'ohscal', 'reviews', 'sports'};%;{'covtype.libsvm.binary','gisette_scale','rcv1_train.binary','SUSY','splice','svmguide3','a9a','20news_100word','mushrooms','w8a'};
+datasets     = {'classic', 'hitech', 'k1b', 'la12', 'la1', 'la2', 'ng3sim', 'ohscal', 'reviews', 'sports'};%;{'covtype.libsvm.binary','gisette_scale','rcv1_train.binary','SUSY','splice','svmguide3','a9a','20news_100word','mushrooms','w8a'};
 
-opts.epochs  = 10;
-opts.min_time= 10;
-en_subplot   = 1;
-
+opts.epochs  = 5;
+opts.min_time = 10;
+en_subplot   = 0;
 nruns_batch  = 1;
 showp = 0.1;
 
@@ -45,7 +43,7 @@ for idx_dataset = 1:length(datasets)
     trace_time       =[];    trace_passes     =[];
     trace_obj_val    =[];    trace_test_loss  =[];
     for idx_method = 1:length(funfcn_stoc)
-        stoc_data = load(['results_GGRLR_' func2str(funfcn_stoc{idx_method}) '_' dataset_name '.mat'],'stat_data','trace_passes','trace_time','trace_accuracy','trace_obj_val','trace_test_loss');
+        stoc_data = load(['results_GGRLR_' func2str(funfcn_stoc{idx_method}) '_' dataset_name '.mat'],'trace_passes','trace_time','trace_accuracy','trace_obj_val','trace_test_loss');
         num_runs = size(stoc_data.trace_time,2);
         for idx_runs = 1:num_runs
             for idx_trace = 1:length(stoc_data.trace_time(:,idx_runs))
@@ -58,7 +56,7 @@ for idx_dataset = 1:length(datasets)
         end
     end
     for idx_method = 1:length(funfcn_batch)
-        batch_data = load(['results_GGRLR_' func2str(funfcn_batch{1}) '_' dataset_name '.mat'],'stat_data','trace_passes','trace_time','trace_accuracy','trace_obj_val','trace_test_loss');
+        batch_data = load(['results_GGRLR_' func2str(funfcn_batch{1}) '_' dataset_name '.mat'],'trace_passes','trace_time','trace_accuracy','trace_obj_val','trace_test_loss');
     end
     
     %stochasitc methods
@@ -102,12 +100,7 @@ for idx_dataset = 1:length(datasets)
     batch_data.trace_test_loss_avg  =[];
     batch_data.trace_test_loss_std  =[];
     for idx_method = 1:length(funfcn_batch)
-        num_traces = length(batch_data.stat_data(idx_method,1).trace.times);
-        for idx_runs = 1:num_runs
-            if num_traces > length(batch_data.stat_data(idx_method,idx_runs).trace.times);
-                num_traces = length(batch_data.stat_data(idx_method,idx_runs).trace.times);
-            end
-        end
+        num_traces = length(batch_data.trace_passes(:,idx_method,1));
         for idx_trace = 1:num_traces
             batch_data.trace_accuracy_avg(idx_trace,idx_method) = mean(batch_data.trace_accuracy(idx_trace,idx_method,:));
             batch_data.trace_accuracy_std(idx_trace,idx_method) = std(batch_data.trace_accuracy(idx_trace,idx_method,:));
@@ -208,7 +201,7 @@ for idx_dataset = 1:length(datasets)
     end
     %title(sprintf('eta_1=%g',eta));
     if ~en_subplot
-        saveas(gca, [dataset_name '_time_vs_epochs.eps'],'psc2');
+        saveas(gca, [dataset_name '_time_vs_epochs.eps'],'epsc');
     end
     
     
@@ -277,7 +270,7 @@ for idx_dataset = 1:length(datasets)
     end
     %         %title(sprintf('eta_1=%g',eta));
     if ~en_subplot
-        saveas(gca, [dataset_name '_loss_vs_epochs.eps'],'psc2');
+        saveas(gca, [dataset_name '_loss_vs_epochs.eps'],'epsc');
     end
     
     
@@ -353,7 +346,7 @@ for idx_dataset = 1:length(datasets)
      end
     %         %title(sprintf('eta_1=%g',eta));
     if ~en_subplot
-        saveas(gca, [dataset_name '_obj_vs_epochs.eps'],'psc2');        
+        saveas(gca, [dataset_name '_obj_vs_epochs.eps'],'epsc');        
     end
 end
 

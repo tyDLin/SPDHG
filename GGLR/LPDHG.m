@@ -4,16 +4,13 @@ s = opts.s; F = opts.F; mu = opts.mu;  L = opts.L;
 checki = opts.checki; epochs = opts.epochs;
 
 % initialization
-t = cputime; 
-xs = []; times = []; iters = [];
+t = cputime; xs = []; times = []; iters = [];
 [d,N]  = size(samples); x = zeros(d,1); y = zeros(d,1);xbar = zeros(d,1);
-%code opt
 nuFT = mu*F'; snuF = s*mu*F;
 
 done = false; k = 0;
 while ~done
-    r= 1/(sqrt(k+1) + L);
-    
+    r= 1/(sqrt(k+1) + L);    
     % LPDHG
     y = min( 1, max(-1,snuF*x+y) );
     
@@ -30,7 +27,7 @@ while ~done
     end    
     x = x - r*( sum_nabla_lx/N + nuFT*y);  
     
-    % uniformly averaging
+    % uniformly averaged
     xbar   = (k*xbar + x)/(k+1);
     
     % log

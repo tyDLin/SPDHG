@@ -1,11 +1,9 @@
 % Graph-Guided Logistic Regression
-clear all;%close all;
+clear all; close all;
 
 funfcn_batch = {@LPDHG};
 funfcn_stoc  = {@STOC_ADMM,@RDA_ADMM,@OPG_ADMM,@Fast_SADMM,@Ada_SADMMdiag,@Ada_SADMMfull,@SPDHG_GC};
-%funfcn_stoc  = {@STOC_ADMM,@RDA_ADMM,@OPG_ADMM,@Fast_SADMM,@SPDHG_GC};
-%datasets     = {'classic', 'hitech', 'k1b', 'la12', 'la1', 'la2', 'ng3sim', 'ohscal', 'reviews', 'sports','covtype.libsvm.binary','gisette_scale','rcv1_train.binary','SUSY','splice','svmguide3','a9a','20news_100word','mushrooms','w8a'};
-datasets     = {'splice'};
+datasets     = {'classic', 'hitech', 'k1b', 'la12', 'la1', 'la2', 'ng3sim', 'ohscal', 'reviews', 'sports','covtype.libsvm.binary','gisette_scale','rcv1_train.binary','SUSY','splice','svmguide3','a9a','20news_100word','mushrooms','w8a'};
 
 nruns_stoc   = 1;
 n_epochs     = 10;
@@ -16,17 +14,12 @@ for idx_datasets = 1:length(datasets)
     dataset_name = datasets{idx_datasets};
     fprintf('\nNow processing (%d/%d) dataset: %s\n',idx_datasets,length(datasets),dataset_name);
     try
-        try
-            data_path = 'E:\Documents\Datasets\mat_datasets\LIBSVM\';
-            load([data_path dataset_name '.mat']);
-        catch
-            data_path = 'E:\Documents\Datasets\mat_datasets\docdatasets\';
-            dataset   = load([data_path dataset_name '']);
-            samples   = dataset.dtm'; labels = dataset.classid;
-        end
-    catch
-        data_path = '../../../../../../Datasets/mat_datasets/';
+        data_path = 'E:\Documents\Datasets\mat_datasets\LIBSVM\';
         load([data_path dataset_name '.mat']);
+    catch
+        data_path = 'E:\Documents\Datasets\mat_datasets\docdatasets\';
+        dataset   = load([data_path dataset_name '']);
+        samples   = dataset.dtm'; labels = dataset.classid;
     end
         
     % graphical matrix generation
@@ -79,13 +72,6 @@ for idx_datasets = 1:length(datasets)
     %Samples divide
     ratio_train  = 0.8;
     idx_all      = 1:length(labels);
-    %     if( exist(['test_data_' dataset_name '.mat'],'file') ==0 )
-    %         idx_train    = idx_all(rand(1,length(labels),1)<ratio_train);
-    %         idx_test     = setdiff(idx_all,idx_train);
-    %         save(['test_data_' dataset_name '.mat'], 'idx_train','idx_test');
-    %     else
-    %         load(['test_data_' dataset_name '.mat'], 'idx_train','idx_test');
-    %     end
     idx_train    = idx_all(rand(1,length(labels),1)<ratio_train);
     idx_test     = setdiff(idx_all,idx_train);
     
@@ -100,12 +86,8 @@ for idx_datasets = 1:length(datasets)
     l_test       = labels(idx_test);
     
     %Parameters setup
-    %Parameters of model
-    opts.mu      = 1e-5; %parameter of graph-guided term
-    
-    %Parameters of algorithms
-    opts.F       = F;     %The graph structure
-    
+    opts.mu      = 1e-5; %parameter of graph-guided term   
+    opts.F       = F;     %The graph structure    
     opts.beta    = 1;     %parameter of STOC-ADMM to balance augmented lagrange term
     opts.gamma   = 1e-2;  %Regularized Logistic Regression term
     opts.epochs  = n_epochs;     %maximum effective passes
@@ -127,11 +109,8 @@ for idx_datasets = 1:length(datasets)
     end
     opts.L1 = opts.beta*eigFTF + opts.L;
     opts.L2 = sqrt(max(2*opts.L*opts.L+eigFTF, 2*eigFTF));
-    opts.L3 = max(8*opts.beta*eigFTF, sqrt(8*opts.L*opts.L + opts.beta*eigFTF))+opts.gamma;
-    
-    opts.eta = max(opts.beta*eigFTF, 100);%parameter of RDA-ADMM and OPG-ADMM
-    
-    
+    opts.L3 = max(8*opts.beta*eigFTF, sqrt(8*opts.L*opts.L + opts.beta*eigFTF))+opts.gamma;    
+    opts.eta = max(opts.beta*eigFTF, 100);%parameter of RDA-ADMM and OPG-ADMM     
     
     %stoc methods
     for idx_method = 1:length(funfcn_stoc)
@@ -477,8 +456,7 @@ for idx_datasets = 1:length(datasets)
                 trace_obj_val(idx_trace,idx_runs)   = min(get_obj_val(s_train,l_train,x, opts.F, opts.mu),trace_obj_val(idx_trace-1,idx_runs));
             end
         end
-        save(['results_GGLR_' func2str(funfcn_batch{idx_method}) '_' dataset_name '.mat'],'stat_data','trace_passes','trace_time','trace_accuracy','trace_obj_val','trace_test_loss');
+        save(['results_GGLR_' func2str(funfcn_batch{idx_method}) '_' dataset_name '.mat'],'trace_passes','trace_time','trace_accuracy','trace_obj_val','trace_test_loss');
     end
 end
-%end
 draw_results
